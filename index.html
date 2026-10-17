@@ -2,27 +2,104 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ระบบแจ้งผลการเรียนออนไลน์ - โรงเรียนวัดหงส์ปทุมาวาส</title>
     <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
+            height: 100dvh; /* Dynamic Viewport Height for mobile browsers */
             overflow: hidden;
             background-color: #fdfbff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            touch-action: manipulation;
         }
+
+        /* Loading Screen overlay */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 16px;
+            font-size: 15px;
+            color: #555555;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Iframe Styles */
         iframe {
             width: 100%;
             height: 100%;
+            height: 100dvh;
             border: none;
             display: block;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
         }
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbyzZBHnFO8V_IyeDaU_v6GpDqK1pUgejK_Xio5fn9oaEZRiDY7Gq-HyteW04lezfvTp/exec"></iframe>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text">กำลังโหลดระบบ...</div>
+    </div>
+
+    <!-- Web App Iframe -->
+    <iframe 
+        id="appFrame"
+        src="https://script.google.com/macros/s/AKfycbyzZBHnFO8V_IyeDaU_v6GpDqK1pUgejK_Xio5fn9oaEZRiDY7Gq-HyteW04lezfvTp/exec"
+        allow="geolocation; microphone; camera"
+        loading="eager">
+    </iframe>
+
+    <script>
+        // Hide loading screen once iframe finishes loading
+        const iframe = document.getElementById('appFrame');
+        const loader = document.getElementById('loadingScreen');
+
+        iframe.onload = function() {
+            loader.classList.add('hidden');
+        };
+    </script>
 </body>
 </html>
-
